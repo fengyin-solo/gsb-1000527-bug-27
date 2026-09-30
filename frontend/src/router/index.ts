@@ -9,6 +9,7 @@ const Geochem = () => import('@/views/geochem/index.vue')
 const Assay = () => import('@/views/assay/index.vue')
 const Mapping = () => import('@/views/mapping/index.vue')
 const SurveyPoint = () => import('@/views/survey_point/index.vue')
+const SurveyPointWorkbench = () => import('@/views/survey_point/workbench.vue')
 const DrillingLog = () => import('@/views/drilling_log/index.vue')
 const Reserve = () => import('@/views/reserve/index.vue')
 const SampleRegistry = () => import('@/views/sample_registry/index.vue')
@@ -32,6 +33,7 @@ const router = createRouter({
     { path: '/assay', name: 'assay', component: Assay },
     { path: '/mapping', name: 'mapping', component: Mapping },
     { path: '/survey_point', name: 'survey_point', component: SurveyPoint },
+    { path: '/survey_point/workbench', name: 'survey_point_workbench', component: SurveyPointWorkbench },
     { path: '/drilling_log', name: 'drilling_log', component: DrillingLog },
     { path: '/reserve', name: 'reserve', component: Reserve },
     { path: '/sample_registry', name: 'sample_registry', component: SampleRegistry },

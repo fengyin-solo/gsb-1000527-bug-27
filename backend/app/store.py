@@ -27,6 +27,10 @@ class Store:
                 return row
         return None
 
+    def replace_table(self, module: str, rows: list[dict[str, Any]]) -> None:
+        """整表替换：聚合重建只有在新结果通过一致性校验后才提交，旧表整体换出。"""
+        self._tables[module] = [dict(row) for row in rows]
+
     def overview(self) -> dict[str, object]:
         modules: list[dict[str, object]] = []
         for name in self.module_names():

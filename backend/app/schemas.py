@@ -19,6 +19,8 @@ class ActionResult(BaseModel):
     ok: bool
     message: str
     entry: dict[str, Any] | None = None
+    aggregate: dict[str, Any] | None = None
+    batch_id: str | None = None
 
 
 class EntryPayload(BaseModel):
