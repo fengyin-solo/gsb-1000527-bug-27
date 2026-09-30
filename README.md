@@ -74,3 +74,28 @@ npm run dev
   `backend/app/routers/<模块>.py`，业务规则在 `backend/app/services/<模块>.py`。
 - 列表接口统一返回 `{ items, total, page, size }`，动作接口统一返回 `{ ok, message }`。
 - 状态流转只允许在 `app/services` 里改，路由层不做业务判断。
+
+## 测绘控制聚合线
+
+`survey_point` 模块的看板统计、控制点台账（按点号去重）与点位图工作台
+（按责任组图幅分段）共用 `app/services/survey_control.py` 产出的同一份聚合
+快照，三个读端返回相同的 `data_version`：
+
+- `GET /api/survey_point/aggregate`：看板统计 + 点位图分段 + 口径校验结果；
+- `GET /api/survey_point`：控制点台账，支持点类型/复核状态/图幅过滤；
+- `GET /api/survey_point/segments`：点位图工作台；
+- `POST /api/survey_point/{id}/review`：点类型复核，携带 `expected_seq`
+  做并发控制（CAS），成功后随响应返回重算快照，前端一次写入同步三端；
+- `POST /api/survey_point/aggregate/rebuild`：幂等批次重建，同内容批次
+  重放只返回当前快照；分段总数与点位去重数不符（或重算异常）时整批作废，
+  保留上一份成功统计，不会把看板清零。
+
+口径要点：同一控制点跨图幅时以最新签发坐标（`coordinate_versions` 中版本号
+最大者）与责任组所在图幅为准，历史坐标按签发版本全部保留；存量缺责任组/图幅
+的点首次聚合时迁移补数（默认“未分幅补录组/待分幅”），迁移幂等。
+
+回归测试（仅标准库，离线可跑）：
+
+```bash
+cd backend && python3 tests/test_survey_control.py
+```
